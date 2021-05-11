@@ -1,0 +1,83 @@
+
+#prsaw api-code=goOnEPRYcUad
+
+#activity_string = 'on {} servers.'.format(len(client.guilds))
+    #await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=activity_string))
+
+# Setting `Playing ` status
+#await bot.change_presence(activity=discord.Game(name="a game"))
+
+#await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='The Boys'))
+
+#activity = discord.Activity(type=discord.ActivityType.listening, name="Aestivial's scoldings 😪")
+
+#await client.change_presence("On explorations...")#(status=discord.Status.idle, activity=activity)
+
+# Setting `Streaming ` status
+#await bot.change_presence(activity=discord.Streaming(name="My Stream", url=my_twitch_url))
+
+# Setting `Listening ` status
+#await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="a song"))
+
+# Setting `Watching ` status
+#await bot.change_presence(activity=discord.Activity(type=discord.ActivityType., name="a movie"))
+
+
+server = ctx.message.author.guild
+    server_name = server.name
+    server_id = server.id
+    server_owner = server.owner.name
+    print("")
+    print("hi")
+    print("server name: {}\n"
+          "server id: {}\n"
+          "server owner: {}"
+          .format(server_name, server_id, server_owner))
+    print("")
+    try:
+        # Create target Directory
+        os.mkdir(str(server.name))
+        print("Guild Directory ", str(server.name)," Created ") 
+    except FileExistsError:
+        pass
+        print("Guild Directory ", str(server.name)," already exists")
+
+    with open(str(server.name) + "\\" + str(server.name) + "_info.json", "w") as s:
+        e = "Server name: " + server.name + "\n" + "Server ID: " + str(server_id) + "\n" + "Server Owner: " + server_owner
+        print(e)
+        s.write(e)
+        s.close()
+    await client.process_commands(message)
+
+
+@commands.command()
+async def rank(self, ctx, rank):
+    await ctx.send(rank)
+
+    if ctx.channel.id == bot_channel:
+        stats = leveling.find_one({"id" : ctx.author.id})
+        if stats is None:
+            embed = discord.Embed(description="You have't sent any messages, no rank!!!")
+            await ctx.channel.send(embed=embed)
+        else:
+            xp = stats["xp"]
+            lvl = 0
+            rank = 0
+            while True:
+                if xp < ((50*(lvl**2))+(50*lvl)):
+                    break
+                lvl += 1
+                xp -= (50 * (lvl - 1) ** 2) + (50 * (lvl - 1))
+                boxes = int((xp/(200*((1/2) * lvl))*20))
+                rankings = leveling.find().sort("xp",-1)
+                for x in rankings:
+                    rank += 1
+                    if stats["id"] == x["id"]:
+                        break
+                embed = discord.Embed(title="{}'s level stats".format(ctx.author.name))
+                embed.add_field(name="Name", value=ctx.author.mention, inline=True)
+                embed.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}", inline=True)
+                embed.add_field(name="Rank", value=f"{rank}/{ctx.guild.member_count}", inline=True)
+                embed.add_field(name="Progress Bar [lvl", value=boxes * ":blue_square:" + (20-boxes) * ":white_large_square", inline=False)
+                embed.set_thumbnail(url=ctx.author.avatar_url)
+                await ctx.channel.send(embed=embed)"
