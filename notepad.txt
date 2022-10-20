@@ -1,4 +1,6 @@
 
+### JUST KEEPING THESE FOR FUTURE TESTING:
+
 #prsaw api-code=goOnEPRYcUad
 
 #activity_string = 'on {} servers.'.format(len(client.guilds))
